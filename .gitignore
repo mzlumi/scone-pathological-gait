@@ -1,0 +1,14 @@
+# SCONE binaries are downloaded by scripts/fetch_scone.sh
+vendor/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Raw SCONE optimization output (curated copies live in results/)
+results/runs/
+
+.DS_Store
