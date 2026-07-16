@@ -1,0 +1,102 @@
+{
+  "source": "0101_9.489_1.227.par.sto",
+  "cycles": 8,
+  "metrics": {
+    "speed": 0.7259181585677749,
+    "stride_length": 1.0643775,
+    "stride_duration": 1.46625,
+    "cadence": 81.84143222506394,
+    "stance_percent": 61.027348668018064,
+    "ankle_at_contact": -14.371248262499986,
+    "ankle_peak_dorsiflexion_stance": -10.755591009187498,
+    "ankle_peak_plantarflexion": -25.87854013706251,
+    "ankle_range": 15.162285577875014,
+    "knee_at_contact": 22.008858375000013,
+    "knee_min_stance": -2.8656622375875,
+    "knee_peak_swing": 71.4662317275,
+    "hip_peak_extension": -17.959221772874997,
+    "foot_contact_index": 1.2622735429966607,
+    "fit_score": 64.84002980894613
+  },
+  "fit": {
+    "Pelvic tilt": 100.0,
+    "Hip angle": 95.3809344099684,
+    "Knee angle": 54.25125614686912,
+    "Ankle angle": 0.0,
+    "GRF": 74.56795848789312
+  },
+  "objective": {
+    "value": 1.22685,
+    "detail": "",
+    "children": {
+      "Gait": {
+        "value": 0.0,
+        "detail": "100 * (0 > 0.05)",
+        "children": {
+          "step_velocity": {
+            "value": 0.714752,
+            "detail": "",
+            "children": {}
+          },
+          "step_count": {
+            "value": 14.0,
+            "detail": "",
+            "children": {}
+          }
+        }
+      },
+      "Effort": {
+        "value": 1.02891,
+        "detail": "0.1 * 10.2891",
+        "children": {
+          "effort": {
+            "value": 5794.5,
+            "detail": "",
+            "children": {}
+          },
+          "distance": {
+            "value": 7.49248,
+            "detail": "",
+            "children": {}
+          }
+        }
+      },
+      "DofLimits": {
+        "value": 0.0,
+        "detail": "",
+        "children": {
+          "ankle_angle_l": {
+            "value": 0.0,
+            "detail": "0.1 * 0",
+            "children": {}
+          },
+          "ankle_angle_r": {
+            "value": 0.0,
+            "detail": "0.1 * 0",
+            "children": {}
+          },
+          "knee_angle_l": {
+            "value": 0.0,
+            "detail": "0.01 * (4.7804 > 5)",
+            "children": {}
+          },
+          "knee_angle_r": {
+            "value": 0.0,
+            "detail": "0.01 * (4.30367 > 5)",
+            "children": {}
+          }
+        }
+      },
+      "HeadStabilityY": {
+        "value": 0.0138252,
+        "detail": "0.25 * 0.0553007",
+        "children": {}
+      },
+      "HeadStabilityX": {
+        "value": 0.184118,
+        "detail": "0.25 * 0.736472",
+        "children": {}
+      }
+    }
+  }
+}
