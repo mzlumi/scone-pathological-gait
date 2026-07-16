@@ -1,0 +1,35 @@
+CmaOptimizer {
+	# max_threads = 2
+	signature_prefix = DATE_TIME
+	
+	init_file = InitParameters.par  
+	use_init_file = true
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		OpenSimModel {
+			model_file = Human0914.osim
+			
+			# Optimize initial state parameters
+			state_init_file = InitStateGait.sto
+			initial_state_offset =	0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			
+			# Plantarflexor atrophy: 50 % of the maximum isometric force on both legs
+			Properties {
+				gastroc_l { max_isometric_force.factor = 0.5 }
+				gastroc_r { max_isometric_force.factor = 0.5 }
+				soleus_l { max_isometric_force.factor = 0.5 }
+				soleus_r { max_isometric_force.factor = 0.5 }
+			}
+		}
+		
+		# Controller for gait, based on [Geyer & Herr 2010]
+		<< ControllerComplexGH.scone >>
+		
+		# Measure for gait, minimum speed 0.5 m/s
+		<< Measure05.scone >>
+	}
+}
