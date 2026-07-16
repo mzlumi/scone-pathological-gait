@@ -234,3 +234,108 @@ push-off are the hallmark. Clinically the knee usually ends up flexed
 (crouch) rather than hyperextended; the model's knee hyperextension is
 allowed by its soft knee limit and by an objective that tolerates limit
 torque.
+
+# Deliverable 3: toe walking from hyperreflexia
+
+> *Please comment on the results obtained from the values of the objective
+> functions and gait analysis tool after evaluating your solution. What are
+> the main kinematic adaptations when hyperreflexia is introduced to the
+> plantar flexors (please elaborate)?*
+
+**Setup and one deviation.** `Hyperreflexia.scone` uses
+`ControllerHyperreflexia.scone`, a copy of the course controller in which the
+stance velocity (V+) reflex gain of soleus and gastrocnemius is raised from
+its default of 0.1, and `Measure05.scone`. The handout writes the new gain as
+`KV = ~1.0<0,10>`. The tilde keeps KV a design parameter, so CMA-ES starts at
+1.0 but may move it anywhere in [0, 10]. In the healthy optimization these
+two gains fell from 0.1 to below 0.04, so the optimizer clearly prefers to
+switch this reflex off. A spastic patient cannot do that. The chosen
+solution therefore uses a **fixed gain**, `KV = 1.0` without the tilde, the
+same choice the SCONE hyper-reflexia tutorial makes. The handout version was
+run too, for comparison.
+
+| Variant | First full walk | Best objective (generation) |
+|---|---|---|
+| KV = 0.3, fixed | generation 8 | 1.330 (99) |
+| **KV = 1.0, fixed (chosen)** | **generation 11** | **1.227 (101)** |
+| KV = ~1.0<0,10> (handout, optimized) | generation 14 | 1.295 (107) |
+
+The runs were stopped after about 100 generations, when the objective was
+improving by less than 0.2 % per generation.
+
+| Measure | Healthy | KV 0.3 | **KV 1.0** | Handout |
+|---|---|---|---|---|
+| Gait | 0 | 0 | **0** | 0 |
+| Effort (cost of transport, J/(kg m)) | 0.722 (7.22) | 1.118 (11.18) | **1.029 (10.29)** | 1.046 (10.46) |
+| DofLimits | 0 | 0 | **0** | 0 |
+| HeadStabilityY | 0.022 | 0.031 | **0.014** | 0.009 |
+| HeadStabilityX | 0.036 | 0.181 | **0.184** | 0.241 |
+| **Total** | 0.780 | 1.330 | **1.227** | 1.295 |
+| Step velocity (m/s) | 1.03 | 0.70 | **0.71** | 0.74 |
+
+**Objective.** The toe walker meets the 0.5 m/s requirement and respects the
+joint limits, but walking costs 42 % more energy per metre than in health
+(10.3 against 7.2 J/(kg m)) at a lower speed. A higher energy cost is also
+what is measured in children who toe walk. Fore-aft head accelerations are
+five times larger (0.184 against 0.036): every step lands on a stiff,
+plantarflexed foot and brakes the body abruptly. The vertical head term is
+smaller than in health because the heel impact spike is gone.
+
+![Mean gait cycles with plantarflexor hyperreflexia against the healthy solution. Grey: normal range.](../../results/figures/hyperreflexia_comparison.png)
+
+![Gait analysis of the hyperreflexia solution with KV = 1.0 (`Hyperreflexia.scone`).](../../results/figures/hyperreflexia_fixed1.0_gait.png)
+
+| Metric | Healthy | KV 0.3 | **KV 1.0** | Handout |
+|---|---|---|---|---|
+| Speed (m/s) | 1.01 | 0.67 | **0.73** | 0.71 |
+| Stride length (m) | 1.26 | 0.88 | **1.06** | 1.00 |
+| Cadence (steps/min) | 96 | 92 | **82** | 86 |
+| Stance (% of cycle) | 66 | 68 | **61** | 60 |
+| Ankle at contact (deg) | 4.6 | -3.6 | **-14.4** | -12.7 |
+| Peak dorsiflexion in stance (deg) | 8.4 | 1.7 | **-10.8** | -7.8 |
+| Peak plantarflexion (deg) | -10.2 | -14.6 | **-25.9** | -20.7 |
+| Knee at contact (deg) | 2.1 | 32.4 | **22.0** | 29.5 |
+| Knee, least flexed in stance (deg) | 0.7 | -1.3 | **-2.9** | 12.1 |
+| Peak knee flexion in swing (deg) | 80.1 | 77.0 | **71.5** | 69.2 |
+| Foot contact index | 0.00 | 1.23 | **1.26** | 1.27 |
+| Overall fit (%) | 72 | 45 | **65** | 67 |
+
+**Kinematic adaptations.** With KV = 1.0 the model walks on its toes:
+
+1. *Forefoot contact and no heel contact.* The first contact is on the toes
+   (contact index 1.26, beyond the metatarsal heads) with the ankle
+   plantarflexed by 14 deg, and the heel never reaches the ground: even the
+   most dorsiflexed point of stance is still 11 deg of plantarflexion, where
+   the healthy model reaches 8 deg of dorsiflexion. The whole ankle curve is
+   shifted by 15 to 20 deg towards plantarflexion (ankle fit 0 %), with a
+   peak of -26 deg at push-off.
+2. *Why.* A velocity reflex fires whenever soleus and gastrocnemius are
+   being stretched, which in a normal stance happens all the time, as the
+   shank rotates forward over the planted foot. With a high gain, every
+   attempt to dorsiflex is met by a strong plantarflexor contraction, so the
+   optimizer settles on a gait that never stretches these muscles quickly:
+   land already plantarflexed and stay on the forefoot.
+3. *Knee.* The knee lands flexed (22 deg instead of 2 deg) to absorb the
+   forefoot landing, then is pushed into slight hyperextension in midstance
+   (-3 deg): with the foot fixed in plantarflexion, the ground reaction force
+   passes in front of the knee (the plantarflexion and knee extension
+   couple). Swing knee flexion is smaller (72 deg instead of 80 deg).
+4. *Gait pattern.* Slower walking (0.73 m/s) with shorter strides, a lower
+   cadence, and a single rounded force peak without the heel strike
+   transient (GRF fit 75 %, higher than the healthy model's because the
+   healthy impact spike is gone).
+
+**Effect of the gain.** At KV = 0.3 the model already lands on its forefoot
+(contact index 1.23) but with the ankle near neutral, the heel close to the
+ground in midstance, and irregular cycles; at KV = 1.0 the toe walking is
+complete and regular. Toe walking therefore starts at or below three times
+the default gain.
+
+**The handout version** also produces toe walking, but the optimizer reshaped
+the impairment: by generation 107 it had lowered the soleus gain to 0.44 and
+raised the gastrocnemius gain to 1.56. Gastrocnemius also flexes the knee,
+and that solution keeps the knee flexed through stance (at least 12 deg),
+similar to the "jump gait" of children with cerebral palsy, who combine
+equinus with knee flexion. It is an interesting gait, but the impairment
+level is chosen by the optimizer rather than set by the modeller, which is
+why the fixed gain is used as the answer.
