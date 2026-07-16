@@ -10,7 +10,7 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-from scone_gait.results import best_result, parse_result_name
+from scone_gait.results import best_result, init_file_name, parse_result_name
 
 SETUP_PATTERNS = ("config.scone", "*.osim", "*.sto", "*.par", "history.txt", "optimization.log")
 
@@ -35,9 +35,10 @@ def curate_run(run_dir: str | Path, dest: str | Path, best: str | Path | None = 
     if not best.exists():
         raise FileNotFoundError(best)
 
+    init = init_file_name(run_dir)
     dest.mkdir(parents=True, exist_ok=True)
     for f in sorted(run_dir.iterdir()):
-        if f.is_file() and _is_setup_file(f):
+        if f.is_file() and (_is_setup_file(f) or f.name == init):
             shutil.copy2(f, dest / f.name)
     for f in (best, best.with_name(best.name + ".sto"), best.with_name(best.name + ".txt")):
         if f.exists():

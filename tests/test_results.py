@@ -3,6 +3,7 @@ import pytest
 
 from scone_gait.results import (
     best_result,
+    init_file_name,
     parse_report,
     parse_result_name,
     read_history,
@@ -61,6 +62,21 @@ def test_best_result_picks_lowest_objective(tmp_path):
               "InitParameters.par", "0013_14.602_8.802.par.sto"]:
         (tmp_path / n).write_text("")
     assert best_result(tmp_path).name == "0013_14.602_8.802.par"
+
+
+def test_best_result_ignores_a_warm_start_init_file(tmp_path):
+    (tmp_path / "config.scone").write_text(
+        'CmaOptimizer {\n\tinit_file = "../../results/healthy/0035_1.021_0.780.par"\n'
+        "\tuse_init_file = true\n\tSimulationObjective { max_duration = 10 }\n}\n"
+    )
+    for n in ["0035_1.021_0.780.par", "0000_98.461_85.929.par", "0112_0.964_0.880.par"]:
+        (tmp_path / n).write_text("")
+    assert init_file_name(tmp_path) == "0035_1.021_0.780.par"
+    assert best_result(tmp_path).name == "0112_0.964_0.880.par"
+
+
+def test_init_file_name_without_config(tmp_path):
+    assert init_file_name(tmp_path) is None
 
 
 def test_best_result_on_empty_folder(tmp_path):

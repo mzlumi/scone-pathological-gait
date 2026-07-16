@@ -54,12 +54,39 @@ def parse_result_name(path: str | Path) -> ResultName | None:
     return ResultName(int(m.group(1)), float(m.group(2)), float(m.group(3)))
 
 
+def init_file_name(folder: str | Path) -> str | None:
+    """File name of the init_file in the config.scone that SCONE wrote to the folder.
+
+    SCONE copies the init file into the results folder. When an optimization is
+    warm started from an earlier solution, that copy has a result-style name
+    (for example 0035_1.021_0.780.par) but is not a result of this run.
+    """
+    config = Path(folder) / "config.scone"
+    if not config.exists():
+        return None
+    from scone_gait.zml import ZmlError, get, parse_zml
+
+    try:
+        blocks = parse_zml(config.read_text())
+    except ZmlError:
+        return None
+    for _, block in blocks:
+        value = get(block, "init_file") if isinstance(block, list) else None
+        if value:
+            return Path(str(value)).name
+    return None
+
+
 def best_result(folder: str | Path) -> Path:
-    """The .par file with the lowest objective in an optimization folder."""
+    """The .par file with the lowest objective among the results of a run.
+
+    The copy of a warm start init file is not a result and is ignored.
+    """
+    init = init_file_name(folder)
     candidates = []
     for p in Path(folder).glob("*.par"):
         name = parse_result_name(p)
-        if name is not None:
+        if name is not None and p.name != init:
             candidates.append((name.best, -name.generation, p))
     if not candidates:
         raise FileNotFoundError(f"no optimization results in {folder}")

@@ -40,6 +40,17 @@ def test_explicit_best_solution(run_dir, tmp_path):
     assert "0050_0.900_0.790.par" not in names
 
 
+def test_warm_start_init_file_is_kept_but_not_chosen(run_dir, tmp_path):
+    (run_dir / "config.scone").write_text(
+        'CmaOptimizer { init_file = "../../results/healthy/0035_1.021_0.780.par" }\n'
+    )
+    (run_dir / "0035_1.021_0.780.par").write_text("healthy")
+    dest = tmp_path / "curated"
+    best = curate_run(run_dir, dest)
+    assert best.name == "0050_0.900_0.790.par"
+    assert (dest / "0035_1.021_0.780.par").read_text() == "healthy"
+
+
 def test_missing_best_solution(run_dir, tmp_path):
     with pytest.raises(FileNotFoundError):
         curate_run(run_dir, tmp_path / "x", best="9999_1.000_1.000.par")
