@@ -45,3 +45,33 @@ entries at the bottom.
 - Throughput: about 4.5 simulations per second in the first generations (the
   model falls quickly), dropping as the gait improves and each simulation runs
   the full 10 s.
+
+## Planning the pathological runs
+
+- Cost: one simulation of 10 s takes about 22 s of CPU under emulation, a
+  generation has 15 simulations, so 200 generations cost about 18 core hours
+  however the runs are scheduled. Several runs go side by side with 3 threads
+  each, and a run can be stopped once it has plateaued (the handout asks to
+  stop when the gait is good enough and never to exceed 200 generations).
+- Sweep scenarios live in `scone/sweeps/`. The chosen value of each deliverable
+  is copied into the file name the handout asks for (`Weakness.scone`,
+  `Hyperreflexia.scone`, `Model.scone`) at the end.
+
+### The hyperreflexia recipe lets the optimizer undo the impairment
+
+The handout models hyperreflexia by changing the stance velocity reflex of
+soleus and gastrocnemius from `KV = ~0.1<0,10>` to `KV = ~1.0<0,10>`. The
+tilde makes KV a design parameter: CMA-ES starts it at 1.0 (with a spread of
+10 percent of the mean) but can move it anywhere in [0, 10].
+
+The healthy run shows what the optimizer does with these gains when it is
+free to: by generation 21 the stance KV of soleus fell from 0.10 to 0.039 and
+that of gastrocnemius from 0.10 to 0.005. Velocity feedback in the
+plantarflexors costs effort and destabilizes the gait, so the optimizer
+removes it. Starting at 1.0 only delays that.
+
+A spastic patient cannot switch off their stretch reflex, so the impairment
+should be a property of the model, not something the optimizer may tune. The
+SCONE hyper-reflexia tutorial adds its extra reflex with constant gains for
+the same reason. Both versions are run: `hyperreflexia_free1.0` follows the
+handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
