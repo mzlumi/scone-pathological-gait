@@ -102,9 +102,11 @@ handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
 
 ### Second batch
 
-- **Weakness x 0.5 (handout method) walked, but only at generation ~190** of
+- **Weakness x 0.5 (handout method) walked, but only at generation 176** of
   200. Best 1.196 at generation 198: heel walking at 0.65 m/s. It is the
-  solution used for Deliverable 2.
+  solution used for Deliverable 2. (An earlier note said generation ~190: that
+  was the newest result file at the time of checking, not the generation of
+  the first walking solution, which `history.txt` shows to be 176.)
 - Because that was so close to the limit, two more weakness runs were added:
   a milder **x 0.7** (handout method, walking by generation 39) and **x 0.5
   warm started** from the healthy solution (`use_init_file_best_as_mean = 1`,
