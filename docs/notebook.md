@@ -121,3 +121,19 @@ handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
 - The GitHub token rotated during the session and a push failed with
   "repository not found". Re-exporting `GH_TOKEN` fixed it; it is now exported
   before every push.
+
+### Correction: what the optimizer did with the free hyperreflexia gain
+
+The earlier prediction was that the optimizer would tune the free KV back
+toward the healthy value. That was only half right. At the stopping point
+(generation 107) the stance KV of soleus had halved (1.0 to 0.44), but the
+gastrocnemius KV had **risen** to 1.56: the optimizer used the gastrocnemius
+velocity reflex as part of its toe walking strategy. The handout recipe does
+produce toe walking, but the level of the impairment is decided by the
+optimizer rather than set by the modeller, which is why the fixed gain
+version is the one used for Deliverable 3.
+
+The toe walking runs (handout recipe, fixed KV 1.0, contracture) were stopped
+at generations 107, 101 and 100. Their objectives were improving by less than
+0.2 % per generation, the handout asks to stop when the gait is good enough,
+and each further generation cost about 3 minutes of the shared machine.
