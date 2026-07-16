@@ -36,10 +36,17 @@ if [[ "$rel" == "$abs" ]]; then
   exit 2
 fi
 
-extra=()
-[[ "$mode" == "evaluate" ]] && extra+=(-r "/work/${rel%.par}.sto")
+run() {
+  docker run --rm \
+    -v "$root:/work" \
+    -v "$root/results/runs:/root/SCONE/results" \
+    "$image" "$flag" "/work/$rel" "$@"
+}
 
-exec docker run --rm \
-  -v "$root:/work" \
-  -v "$root/results/runs:/root/SCONE/results" \
-  "$image" "$flag" "/work/$rel" -s "${extra[@]}" "$@"
+if [[ "$mode" == "evaluate" ]]; then
+  # SCONE appends ".sto" to the -r path, giving <name>.par.sto like SCONE Studio.
+  # The objective breakdown printed by sconecmd is kept in <name>.par.txt.
+  run -r "/work/$rel" "$@" 2>&1 | tee "$abs.txt"
+else
+  run -s "$@"
+fi

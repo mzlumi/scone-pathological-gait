@@ -35,6 +35,13 @@ entries at the bottom.
   locally built amd64 image tried to pull it from Docker Hub and failed. The
   image already has the right platform, so the flag was dropped from
   `docker run`.
+- **Mistake 4.** The first evaluation passed `-r <name>.sto`. SCONE appends
+  `.sto` itself, so the file came out as `<name>.sto.sto`. The runner now
+  passes the `.par` path, which gives `<name>.par.sto`, the same name SCONE
+  Studio uses, and saves the printed objective breakdown as `<name>.par.txt`.
+- With `-s`, `sconecmd` output is block buffered when it goes to a file, so the
+  log lags far behind. The file names in the results folder
+  (`<generation>_<average>_<best>.par`) are the reliable progress indicator.
 - Throughput: about 4.5 simulations per second in the first generations (the
   model falls quickly), dropping as the gait improves and each simulation runs
   the full 10 s.
