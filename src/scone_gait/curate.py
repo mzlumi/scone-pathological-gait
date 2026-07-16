@@ -43,5 +43,8 @@ def curate_run(run_dir: str | Path, dest: str | Path, best: str | Path | None = 
     for f in (best, best.with_name(best.name + ".sto"), best.with_name(best.name + ".txt")):
         if f.exists():
             shutil.copy2(f, dest / f.name)
-    (dest / "SOURCE.txt").write_text(f"run: {run_dir.name}\nbest: {best.name}\n")
+    source = f"run: {run_dir.name}\nbest: {best.name}\n"
+    if init and (run_dir / init).exists():
+        source += f"init: {init} (warm start init file copied by SCONE, not a result of this run)\n"
+    (dest / "SOURCE.txt").write_text(source)
     return dest / best.name

@@ -49,6 +49,7 @@ def test_warm_start_init_file_is_kept_but_not_chosen(run_dir, tmp_path):
     best = curate_run(run_dir, dest)
     assert best.name == "0050_0.900_0.790.par"
     assert (dest / "0035_1.021_0.780.par").read_text() == "healthy"
+    assert "init: 0035_1.021_0.780.par (warm start" in (dest / "SOURCE.txt").read_text()
 
 
 def test_missing_best_solution(run_dir, tmp_path):
