@@ -71,7 +71,7 @@ flexion positive, ankle dorsiflexion positive and plantarflexion negative.
 > improved in terms of gait properties (please elaborate)?*
 
 **Optimization.** `HealthyGait.scone` was optimized for 50 generations. The
-model first completed 10 s of walking at generation 15 (objective 1.17),
+model first completed 10 s of walking at generation 14 (objective 1.15),
 passed the 0.9 target at generation 20 (0.861), and reached its best value,
 **0.780**, at generation 35. The last 15 generations brought no further
 improvement, so the run had converged for this seed. The best solution is
@@ -158,7 +158,7 @@ handout method (start from `InitParameters.par`, at most 200 generations):
 |---|---|
 | 0.25 | never walked: best objective about 94 after 60 generations (the model falls in the first steps), stopped |
 | **0.5** | **walked from generation 176, best 1.196 at generation 198. Chosen value** |
-| 0.7 | walked from generation 19, best 0.965 at generation 99 |
+| 0.7 | walked from generation 18, best 0.965 at generation 99 |
 
 As a check that the pattern does not depend on the optimizer's path, factor
 0.5 was also optimized from the healthy solution (warm start, 112
@@ -182,7 +182,7 @@ though it is slower, the knee now presses against its extension limit hard
 enough to be penalized (9.4 Nm, above the 5 Nm threshold), and vertical head
 accelerations are four times larger. The convergence is the most telling
 number: the weakened model needed 176 generations to find any gait that
-does not fall, against 15 in health, and a quarter of the normal strength was
+does not fall, against 14 in health, and a quarter of the normal strength was
 not enough at all. Plantarflexors are central to balance in this controller:
 the soleus force reflex is what stops the shank from rotating forward over
 the foot in stance.

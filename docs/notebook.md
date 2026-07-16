@@ -79,7 +79,7 @@ handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
 ### First batch: what happened
 
 - **Healthy** (`HealthyGait.scone`, 50 generations): first full 10 s walk at
-  generation 15, below the 0.9 target at generation 20, best 0.780 at
+  generation 14, below the 0.9 target at generation 20, best 0.780 at
   generation 35, no improvement afterwards.
 - **Weakness x 0.25 stopped.** After 60 generations the best objective was
   still about 94: the model fell within the first steps of every simulation
@@ -108,9 +108,9 @@ handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
   was the newest result file at the time of checking, not the generation of
   the first walking solution, which `history.txt` shows to be 176.)
 - Because that was so close to the limit, two more weakness runs were added:
-  a milder **x 0.7** (handout method, walking by generation 39) and **x 0.5
+  a milder **x 0.7** (handout method, walking from generation 18) and **x 0.5
   warm started** from the healthy solution (`use_init_file_best_as_mean = 1`,
-  `init_file_std_factor = 2`, walking by generation 55). The warm start is a
+  `init_file_std_factor = 2`, walking from generation 35). The warm start is a
   deviation from the handout, so it is only used as a check that the heel
   walking pattern does not depend on how the optimizer got there.
 - **Crouch, hamstring tendon slack x 0.90**: the cold run was stopped after
@@ -139,3 +139,8 @@ The toe walking runs (handout recipe, fixed KV 1.0, contracture) were stopped
 at generations 107, 101 and 100. Their objectives were improving by less than
 0.2 % per generation, the handout asks to stop when the gait is good enough,
 and each further generation cost about 3 minutes of the shared machine.
+
+- Generation numbers for "first walking" are now taken from `history.txt`
+  (first generation with an objective below 2). Several earlier notes had
+  used whichever result file was newest at the time of checking, which is
+  later than the real event.
