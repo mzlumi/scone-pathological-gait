@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scone-gait"
+version = "0.1.0"
+description = "Gait analysis of SCONE predictive simulations for the EPFL BIOENG-404 SCONE assignment"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Parmida Mazloomi" }]
+dependencies = [
+    "numpy>=1.26",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
