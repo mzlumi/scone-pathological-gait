@@ -1,0 +1,22 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+08:00:03 SCONE version 2.4.5-RC-2
+08:00:03 Successfully initialized OpenSim-3.3-2021-01-28
+08:00:03 Evaluating /work/results/runs/260716.055822.f0914m.GH2010v8.S10W.D10.I/0035_1.021_0.780.par
+08:00:03 Created default settings /root/.config/SCONE/scone-settings.zml
+08:00:40 Results written to /work/results/runs/260716.055822.f0914m.GH2010v8.S10W.D10.I/0035_1.021_0.780.par*
+08:00:40 result                    = 0.780171
+08:00:40   Gait                    = 0 <- 100 * (0.0112919 > 0.05)
+08:00:40     step_velocity         = 1.02933
+08:00:40     step_count            = 17
+08:00:40   Effort                  = 0.72157 <- 0.1 * 7.2157
+08:00:40     effort                = 5635.11
+08:00:40     distance              = 10.3899
+08:00:40   DofLimits               = 0
+08:00:40     ankle_angle_l         = 0 <- 0.1 * 0
+08:00:40     ankle_angle_r         = 0 <- 0.1 * 0
+08:00:40     knee_angle_l          = 0 <- 0.01 * (2.65137 > 5)
+08:00:40     knee_angle_r          = 0 <- 0.01 * (2.80948 > 5)
+08:00:40   HeadStabilityY          = 0.0221078 <- 0.25 * 0.0884314
+08:00:40   HeadStabilityX          = 0.0364929 <- 0.25 * 0.145972
+08:00:40 simulation time           = 10
+08:00:40 performance (x real-time) = 0.273219
