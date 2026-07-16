@@ -99,3 +99,25 @@ handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
   plantarflexor contracture run and in both hyperreflexia runs: first contact
   on the toe spheres (contact index about 1.24) with the ankle 5 to 10 deg
   plantarflexed, no heel strike transient.
+
+### Second batch
+
+- **Weakness x 0.5 (handout method) walked, but only at generation ~190** of
+  200. Best 1.196 at generation 198: heel walking at 0.65 m/s. It is the
+  solution used for Deliverable 2.
+- Because that was so close to the limit, two more weakness runs were added:
+  a milder **x 0.7** (handout method, walking by generation 39) and **x 0.5
+  warm started** from the healthy solution (`use_init_file_best_as_mean = 1`,
+  `init_file_std_factor = 2`, walking by generation 55). The warm start is a
+  deviation from the handout, so it is only used as a check that the heel
+  walking pattern does not depend on how the optimizer got there.
+- **Crouch, hamstring tendon slack x 0.90**: the cold run was stopped after
+  145 generations without walking (best 89.8). The warm-started version ran
+  200 generations and also never completed 10 s (best 50.2). Shortening the
+  hamstring tendons by 10 % (about 30 % of their optimal fiber length) is too
+  severe for this controller. A milder x 0.95, warm started, replaces it.
+- A **fixed KV = 0.3** hyperreflexia run was added to bracket the gain at
+  which toe walking appears.
+- The GitHub token rotated during the session and a push failed with
+  "repository not found". Re-exporting `GH_TOKEN` fixed it; it is now exported
+  before every push.
