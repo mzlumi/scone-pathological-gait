@@ -75,3 +75,27 @@ should be a property of the model, not something the optimizer may tune. The
 SCONE hyper-reflexia tutorial adds its extra reflex with constant gains for
 the same reason. Both versions are run: `hyperreflexia_free1.0` follows the
 handout literally and `hyperreflexia_fixed1.0` holds KV at 1.0.
+
+### First batch: what happened
+
+- **Healthy** (`HealthyGait.scone`, 50 generations): first full 10 s walk at
+  generation 15, below the 0.9 target at generation 20, best 0.780 at
+  generation 35, no improvement afterwards.
+- **Weakness x 0.25 stopped.** After 60 generations the best objective was
+  still about 94: the model fell within the first steps of every simulation
+  and the optimizer had found nothing better since generation 0. At a quarter
+  of normal plantarflexor strength the course controller, started from
+  `InitParameters.par`, cannot find a stable gait within the budget. The run
+  was stopped to free its cores. This is kept as a negative result rather
+  than tried again with tricks.
+- **Weakness x 0.5 is slow**: objective 59.9 after 54 generations, so it still
+  falls before 10 s. Folder names in the 2021 student repository show the
+  same pattern for their weakness run (stuck near 50 until generation 84,
+  then walking), so it is left running.
+- **The handout hyperreflexia recipe drifts as predicted**: by generation 17
+  the free stance KV of soleus had already dropped from 1.0 to 0.48 (the
+  gastrocnemius gain stayed near 1.0).
+- Early evaluations at generation 13 to 17 already show toe walking in the
+  plantarflexor contracture run and in both hyperreflexia runs: first contact
+  on the toe spheres (contact index about 1.24) with the ankle 5 to 10 deg
+  plantarflexed, no heel strike transient.
