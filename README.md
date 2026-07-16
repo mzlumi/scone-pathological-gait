@@ -61,6 +61,45 @@ The handout gives no grading rubric. The deliverable list and submission rules a
 
 The handout expects the SCONE desktop app on Windows. This repository runs the official Linux build of SCONE headless in Docker instead, through the command line tool `sconecmd`, so every optimization can be repeated from a terminal. The gait analysis that SCONE Studio shows in a window (joint angles and ground reaction forces against normative bands) is reimplemented in Python with tests, so the figures in the report come from code.
 
+### Repository layout
+
+| Path | Content |
+|---|---|
+| [`docs/handout/`](docs/handout) | The 2021 assignment handout (the specification) |
+| [`docs/report/`](docs/report) | The report (Markdown source and PDF) |
+| [`docs/notebook.md`](docs/notebook.md) | Lab notebook: every run, decision and mistake, in order |
+| [`scone/`](scone/README.md) | Course setup files and the deliverable scenarios (`Weakness.scone`, `Hyperreflexia.scone`, `Model.scone`, ...) |
+| [`scone/sweeps/`](scone/sweeps) | Every scenario variant that was optimized |
+| `results/<name>/` | Curated runs: setup files SCONE copied, best solution, its evaluation (`.par.sto`) and objective breakdown (`.par.txt`) |
+| [`results/figures/`](results/figures) | Gait analysis figures and metric summaries |
+| [`src/scone_gait/`](src/scone_gait) | Python package: storage and result readers, gait cycles, normative comparison, clinical metrics, plots, command line tool |
+| [`tests/`](tests) | Unit tests, plus regression tests on a real simulation |
+| [`scripts/`](scripts) | Docker runner, batch launcher, run finalization, figures, report and submission builders |
+
+### Reproducing
+
+```bash
+# Python tools and tests
+uv venv --python 3.12 .venv && source .venv/bin/activate
+uv pip install -e ".[dev]" && pytest
+
+# SCONE in Docker (needs the GitHub CLI to download the CI build)
+scripts/fetch_scone.sh
+docker build -t scone-headless:latest -f docker/Dockerfile .
+
+# Optimize, then evaluate, curate and analyze the best solution
+scripts/scone.sh optimize scone/HealthyGait.scone CmaOptimizer.max_generations=50
+scripts/finalize_run.sh results/runs/<run id> healthy
+
+# Replay a curated solution without optimizing
+scripts/scone.sh evaluate results/healthy/0035_1.021_0.780.par
+
+# Figures, report and submission archive
+scripts/make_figures.sh && scripts/build_report.sh && scripts/package_submission.sh
+```
+
+On Apple silicon the amd64 image runs under emulation: one 10 s simulation takes about 20 s of CPU, and 200 generations of 15 simulations cost about 18 core hours.
+
 ## Status
 
 - [ ] Headless SCONE runner (Docker)
