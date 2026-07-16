@@ -275,8 +275,8 @@ improving by less than 0.2 % per generation.
 
 **Objective.** The toe walker meets the 0.5 m/s requirement and respects the
 joint limits, but walking costs 42 % more energy per metre than in health
-(10.3 against 7.2 J/(kg m)) at a lower speed. A higher energy cost is also
-what is measured in children who toe walk. Fore-aft head accelerations are
+(10.3 against 7.2 J/(kg m)) at a lower speed: without a heel rocker the
+plantarflexors have to hold the body up through the whole stance. Fore-aft head accelerations are
 five times larger (0.184 against 0.036): every step lands on a stiff,
 plantarflexed foot and brakes the body abruptly. The vertical head term is
 smaller than in health because the heel impact spike is gone.
