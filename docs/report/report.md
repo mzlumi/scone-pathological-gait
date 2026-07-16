@@ -141,3 +141,96 @@ The overall fit with the normal data is 72 %:
    itself is limited too: it is planar, its foot is a single rigid segment
    without a toe joint, and the reflex controller has no feedforward
    component.
+
+# Deliverable 2: heel walking from plantarflexor weakness
+
+> *Please comment on the results obtained from the values of the objective
+> functions and gait analysis tool after evaluating your solution. What are
+> the main kinematic adaptations when the plantar flexors are weakened (please
+> elaborate)?*
+
+**Setup.** `Weakness.scone` is `HealthyGait.scone` with the maximum isometric
+force of soleus and gastrocnemius scaled on both legs and with
+`Measure05.scone` (minimum speed 0.5 m/s). Three factors were tried with the
+handout method (start from `InitParameters.par`, at most 200 generations):
+
+| Factor | Outcome |
+|---|---|
+| 0.25 | never walked: best objective about 94 after 60 generations (the model falls in the first steps), stopped |
+| **0.5** | **walked from generation 176, best 1.196 at generation 198. Chosen value** |
+| 0.7 | walked from generation 19, best 0.965 at generation 99 |
+
+As a check that the pattern does not depend on the optimizer's path, factor
+0.5 was also optimized from the healthy solution (warm start, 112
+generations, best 0.880). This is a deviation from the handout and is only
+used for comparison.
+
+| Measure | Healthy | x 0.7 | **x 0.5** | x 0.5 warm |
+|---|---|---|---|---|
+| Gait | 0 | 0 | **0** | 0 |
+| Effort (cost of transport, J/(kg m)) | 0.722 (7.22) | 0.754 (7.54) | **0.852 (8.52)** | 0.801 (8.01) |
+| DofLimits (knee limit torque, Nm) | 0 (2.7) | 0.129 (6.7) | **0.187 (9.4)** | 0 (2.9) |
+| HeadStabilityY | 0.022 | 0.031 | **0.093** | 0.032 |
+| HeadStabilityX | 0.036 | 0.051 | **0.064** | 0.047 |
+| **Total** | 0.780 | 0.965 | **1.196** | 0.880 |
+| Step velocity (m/s) | 1.03 | 0.87 | **0.63** | 0.85 |
+
+**Objective.** The weakened model meets the lower speed requirement (0.63
+m/s against 0.5 m/s), so the gait term stays at zero, but every other term
+gets worse. Walking costs 18 % more energy per metre than in health even
+though it is slower, the knee now presses against its extension limit hard
+enough to be penalized (9.4 Nm, above the 5 Nm threshold), and vertical head
+accelerations are four times larger. The convergence is the most telling
+number: the weakened model needed 176 generations to find any gait that
+does not fall, against 15 in health, and a quarter of the normal strength was
+not enough at all. Plantarflexors are central to balance in this controller:
+the soleus force reflex is what stops the shank from rotating forward over
+the foot in stance.
+
+![Mean gait cycles of the weakened models against the healthy solution. Grey: normal range.](../../results/figures/weakness_comparison.png)
+
+![Gait analysis of the plantarflexor weakness x 0.5 solution (`Weakness.scone`).](../../results/figures/weakness_0.50_cold_gait.png)
+
+| Metric | Healthy | x 0.7 | **x 0.5** | x 0.5 warm |
+|---|---|---|---|---|
+| Speed (m/s) | 1.01 | 0.86 | **0.65** | 0.84 |
+| Stride length (m) | 1.26 | 1.28 | **1.08** | 1.14 |
+| Cadence (steps/min) | 96 | 80 | **72** | 89 |
+| Stance (% of cycle) | 66 | 69 | **75** | 71 |
+| Ankle at contact (deg) | 4.6 | 9.8 | **10.1** | 16.1 |
+| Peak dorsiflexion in stance (deg) | 8.4 | 12.6 | **13.2** | 18.0 |
+| Peak plantarflexion (deg) | -10.2 | -4.6 | **-4.5** | -0.2 |
+| Knee, least flexed in stance (deg) | 0.7 | -3.2 | **-8.3** | 1.4 |
+| Foot contact index | 0.00 | -0.02 | **-0.01** | -0.05 |
+| Overall fit (%) | 72 | 45 | **40** | 37 |
+
+**Kinematic adaptations.** The weakened model walks on its heels:
+
+1. *Excessive dorsiflexion.* The foot lands on the heel (contact index about
+   0) with the ankle dorsiflexed by 10 deg instead of 5 deg, and the shank
+   keeps rotating forward over the foot through stance, up to 13 deg of
+   dorsiflexion (18 deg with the warm start) where the healthy model stops at
+   8 deg. Weak plantarflexors cannot brake the forward rotation of the tibia
+   in midstance and late stance.
+2. *No push-off.* Healthy late stance ends with a quick plantarflexion to -10
+   deg; with half the strength the ankle barely passes neutral (-4.5 deg,
+   -0.2 deg with the warm start), so the "ankle rocker" that propels the body
+   is lost. The second ground reaction force peak is replaced by a long,
+   flat load, and stance stretches to 75 % of the cycle.
+3. *Slow, short, careful steps.* Speed falls from 1.01 to 0.65 m/s, mostly
+   through cadence (96 to 72 steps/min) and stride length (1.26 to 1.08 m).
+4. *A knee strategy.* Without the soleus to hold the shank, the cold solution
+   locks the knee in hyperextension through stance (-8 deg), letting the
+   passive knee limit carry the load. The warm-started solution keeps the knee
+   near straight but dorsiflexes even more and extends the hip less. Both are
+   compensations for the missing ankle moment, and they show that the
+   optimizer can land in different local optima for the same impairment.
+
+The effects grow with the weakness: x 0.7 already shows every adaptation in a
+milder form. These patterns match the calcaneal gait seen after
+plantarflexor weakness, for example after over-lengthening of the Achilles
+tendon in cerebral palsy, where excessive stance dorsiflexion and lost
+push-off are the hallmark. Clinically the knee usually ends up flexed
+(crouch) rather than hyperextended; the model's knee hyperextension is
+allowed by its soft knee limit and by an objective that tolerates limit
+torque.
