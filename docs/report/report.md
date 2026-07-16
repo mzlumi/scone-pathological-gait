@@ -63,3 +63,81 @@ force. A foot contact index locates the centre of pressure at initial contact
 along the foot, from 0 at the heel to 1 at the metatarsal heads, to tell heel
 strikes from forefoot strikes. Signs follow the SCONE plots: hip and knee
 flexion positive, ankle dorsiflexion positive and plantarflexion negative.
+
+# Deliverable 1: healthy gait
+
+> *Please comment on the results obtained from the values of the objective
+> functions and gait analysis tool after evaluating your solution. What can be
+> improved in terms of gait properties (please elaborate)?*
+
+**Optimization.** `HealthyGait.scone` was optimized for 50 generations. The
+model first completed 10 s of walking at generation 15 (objective 1.17),
+passed the 0.9 target at generation 20 (0.861), and reached its best value,
+**0.780**, at generation 35. The last 15 generations brought no further
+improvement, so the run had converged for this seed. The best solution is
+`results/healthy/0035_1.021_0.780.par`.
+
+| Measure | Weighted value | Raw value |
+|---|---|---|
+| Gait | 0 | step velocity 1.03 m/s over 17 steps (minimum 1.0) |
+| Effort | 0.722 | cost of transport 7.22 J/(kg m) |
+| DofLimits | 0 | knee limit torque 2.7 (left) and 2.8 Nm (right), below the 5 Nm threshold; ankle within range |
+| HeadStabilityY | 0.022 | 0.088 |
+| HeadStabilityX | 0.036 | 0.146 |
+| **Total** | **0.780** | |
+
+**Objective.** The model walks the whole 10 s slightly above the required
+speed, so the gait term is zero, and 93 % of the objective is metabolic
+effort. The cost of transport of 7.2 J/(kg m) is about twice the gross
+metabolic cost measured in people walking at this speed (roughly 3 to 4
+J/(kg m)), so the gait is stable but not efficient. The knee leans on its
+extension limit (2.7 to 2.8 Nm of limit torque on every stance), which is
+tolerated only because the joint limit measure ignores torques below 5 Nm.
+Head accelerations stay small.
+
+![Gait analysis of the healthy solution. Grey: normal range from SCONE Studio. Thin lines: individual left (blue) and right (red) cycles. Black: mean of 11 cycles.](../../results/figures/healthy_gait.png)
+
+**Gait analysis.** Over 11 cycles the model walks at 1.01 m/s with a stride
+of 1.26 m, a cadence of 96 steps/min and a stance phase of 66 % of the cycle.
+The overall fit with the normal data is 72 %:
+
+- **Pelvis and hip** are almost normal (fit 100 % and 97 %).
+- **Knee** (fit 44 %): after a normal loading flexion of about 22 deg, the
+  knee goes straight (0.7 deg at its least flexed) for the rest of stance,
+  where people keep 5 to 10 deg of flexion. In swing it flexes to 80 deg
+  instead of about 63 deg.
+- **Ankle** (fit 69 %): the ankle plantarflexes quickly just after heel strike
+  (foot slap, about -8 deg at 5 % of the cycle), dorsiflexes normally in
+  midstance (peak 8 deg), but push-off is weak: the ankle only reaches -10 deg
+  of plantarflexion, late (around 68 %), where people reach about -20 deg at
+  62 %.
+- **Ground reaction force** (fit 51 %): a sharp impact spike at heel strike,
+  then a dip to about 0.5 body weight, and a second peak of 0.95 instead of
+  about 1.1 body weight.
+
+**What can be improved.**
+
+1. *Push-off.* The weak plantarflexion and low second force peak show that
+   the plantarflexors contribute little to propulsion; the long stance and the
+   large swing knee and hip flexion suggest that the model compensates by
+   pulling the leg forward from the hip. A stronger push-off would shorten
+   stance and probably lower the cost of transport.
+2. *Loading response.* The impact spike, the foot slap and the dip in the
+   force come from a heel strike that is not cushioned: in people the
+   tibialis anterior lowers the foot eccentrically and the knee flexes under
+   load. Penalizing high vertical forces (SCONE's own tutorials add a measure
+   on ground reaction forces above 1.5 body weight) would push the optimizer
+   towards a softer landing.
+3. *Knee in stance.* The straight, limit-loaded knee in midstance is not
+   physiological. The joint limit measure could penalize any limit torque
+   (threshold 0 instead of 5 Nm), or a small knee flexion target could be
+   added.
+4. *Swing knee flexion* is about 17 deg too large, which costs energy and
+   reflects the hip driven gait above.
+5. *Optimization.* CMA-ES finds a local optimum that depends on the initial
+   guess and the random seed. Longer runs, restarts from different seeds and
+   more realistic objectives (for example a target speed of 1.2 to 1.3 m/s,
+   closer to preferred walking speed) would give a better gait. The model
+   itself is limited too: it is planar, its foot is a single rigid segment
+   without a toe joint, and the reflex controller has no feedforward
+   component.
