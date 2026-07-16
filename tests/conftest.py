@@ -16,6 +16,34 @@ def square_contact(time, period, stance_fraction, phase=0.0, amplitude=1.0):
     return np.where(t < stance_fraction * period, amplitude, 0.0)
 
 
+DEG = 57.3  # SCONE's radians to degrees factor in the gait template
+PERIOD, STANCE = 1.2, 0.6
+
+
+def synthetic_walk(heel_offset=0.05, toe_offset=0.15):
+    """1 m/s walk with analytic joint angles, as functions of the cycle phase.
+
+    ankle = 10 sin(2 pi phase) - 5      (deg, dorsiflexion positive)
+    knee  = 35 - 25 cos(2 pi (phase - 0.3))   (deg, flexion positive)
+    hip   = 20 cos(2 pi phase)          (deg, flexion positive)
+    """
+    time = np.arange(0.0, 6.0 + 0.0025, 0.005)
+    channels = {"pelvis_tilt": np.zeros_like(time)}
+    for side, leg, phase0 in [("l", "leg0_l", 0.1), ("r", "leg1_r", 0.7)]:
+        phase = ((time - phase0) % PERIOD) / PERIOD
+        channels[f"ankle_angle_{side}"] = (10 * np.sin(2 * np.pi * phase) - 5) / DEG
+        # the model's knee angle is negative in flexion; the template multiplies by -57.3
+        channels[f"knee_angle_{side}"] = -(35 - 25 * np.cos(2 * np.pi * (phase - 0.3))) / DEG
+        channels[f"hip_flexion_{side}"] = 20 * np.cos(2 * np.pi * phase) / DEG
+        channels[f"{leg}.grf_norm_y"] = square_contact(time, PERIOD, STANCE, phase=phase0)
+        channels[f"{leg}.cop_x"] = time.copy()
+        channels[f"{leg}.cop_y"] = np.zeros_like(time)
+        channels[f"{leg}.cop_z"] = np.zeros_like(time)
+        channels[f"calcn_{side}.pos_x"] = time - heel_offset
+        channels[f"toes_{side}.pos_x"] = time + toe_offset
+    return make_storage(time, channels)
+
+
 @pytest.fixture
 def walking_storage():
     """Synthetic 1 m/s walk: 1.2 s stride, 60% stance, legs half a stride apart.
