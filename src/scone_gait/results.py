@@ -12,6 +12,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import numpy as np
+
 _RESULT_NAME = re.compile(r"^(\d+)_(-?[\d.]+)_(-?[\d.]+)\.par$")
 _TIMESTAMP = re.compile(r"^\d{2}:\d{2}:\d{2} ")
 
@@ -62,6 +64,32 @@ def best_result(folder: str | Path) -> Path:
     if not candidates:
         raise FileNotFoundError(f"no optimization results in {folder}")
     return min(candidates)[2]
+
+
+@dataclass(frozen=True)
+class History:
+    generation: np.ndarray
+    best: np.ndarray  # best objective of each generation
+    median: np.ndarray
+
+    @property
+    def best_so_far(self) -> np.ndarray:
+        return np.minimum.accumulate(self.best)
+
+
+def read_history(path: str | Path) -> History:
+    """Read the per-generation history.txt that SCONE writes in a results folder."""
+    lines = [line for line in Path(path).read_text().splitlines() if line.strip()]
+    if not lines or not lines[0].startswith("generation"):
+        raise ValueError(f"{path}: not a SCONE history file")
+    header = lines[0].split("\t")
+    rows = np.array([line.split("\t")[: len(header)] for line in lines[1:]], dtype=float).reshape(-1, len(header))
+    col = {name: i for i, name in enumerate(header)}
+    return History(
+        generation=rows[:, col["generation"]].astype(int),
+        best=rows[:, col["best_fitness"]],
+        median=rows[:, col["median_fitness"]],
+    )
 
 
 @dataclass

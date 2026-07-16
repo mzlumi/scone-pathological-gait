@@ -1,9 +1,11 @@
+import numpy as np
 import pytest
 
 from scone_gait.results import (
     best_result,
     parse_report,
     parse_result_name,
+    read_history,
     read_par,
 )
 
@@ -83,6 +85,29 @@ def test_parse_report_builds_the_measure_tree():
 def test_parse_report_ignores_lines_after_the_tree():
     result = parse_report(REPORT)
     assert "simulation time" not in [c.name for c in result.children]
+
+
+def test_read_history(tmp_path):
+    f = tmp_path / "history.txt"
+    f.write_text(
+        "generation\tbest_fitness\tmedian_fitness\tpredicted_fitness\tfitness_progress\n"
+        "0\t95.6\t96.3\t0\t0\n"
+        "1\t95.4\t95.9\t8.3\t0.0018\n"
+        "2\t96.0\t95.5\t-198\t0.006\n"
+        "3\t64.8\t94.5\t-405\t0.01\n"
+    )
+    h = read_history(f)
+    np.testing.assert_array_equal(h.generation, [0, 1, 2, 3])
+    np.testing.assert_allclose(h.best, [95.6, 95.4, 96.0, 64.8])
+    np.testing.assert_allclose(h.median, [96.3, 95.9, 95.5, 94.5])
+    np.testing.assert_allclose(h.best_so_far, [95.6, 95.4, 95.4, 64.8])
+
+
+def test_read_history_rejects_other_files(tmp_path):
+    f = tmp_path / "x.txt"
+    f.write_text("not a history\n")
+    with pytest.raises(ValueError, match="history"):
+        read_history(f)
 
 
 def test_parse_report_without_result_line():

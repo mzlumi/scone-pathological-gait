@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
 from scone_gait.analysis import PERCENT, GaitAnalysis, GaitPlotSpec  # noqa: E402
+from scone_gait.results import History  # noqa: E402
 
 SIDE_COLORS = {"l": "tab:blue", "r": "tab:red"}
 X_LABEL = "Gait cycle (%)"
@@ -54,6 +55,23 @@ def plot_gait(ga: GaitAnalysis, title: str = "", path: str | Path | None = None)
     axes[0][0].legend(fontsize=7, loc="best")
     if title:
         fig.suptitle(title)
+    fig.tight_layout()
+    if path is not None:
+        fig.savefig(path, dpi=150)
+        plt.close(fig)
+    return fig
+
+
+def plot_convergence(histories: Mapping[str, History], path: str | Path | None = None):
+    """Best objective so far against generation, on a log scale."""
+    fig, ax = plt.subplots(figsize=(6, 3.6))
+    for label, h in histories.items():
+        ax.semilogy(h.generation, h.best_so_far, lw=1.6, label=label)
+    ax.axhline(0.9, color="0.5", ls="--", lw=1, label="Handout target (0.9)")
+    ax.set_xlabel("Generation (-)")
+    ax.set_ylabel("Best objective so far (-)")
+    ax.legend(fontsize=7)
+    ax.grid(True, which="both", alpha=0.3)
     fig.tight_layout()
     if path is not None:
         fig.savefig(path, dpi=150)

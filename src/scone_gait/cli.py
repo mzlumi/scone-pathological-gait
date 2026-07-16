@@ -12,8 +12,8 @@ from pathlib import Path
 
 from scone_gait.analysis import analyze_gait
 from scone_gait.metrics import gait_metrics
-from scone_gait.plots import plot_comparison, plot_gait
-from scone_gait.results import ReportEntry, read_report
+from scone_gait.plots import plot_comparison, plot_convergence, plot_gait
+from scone_gait.results import ReportEntry, read_history, read_report
 from scone_gait.storage import read_sto
 
 
@@ -59,8 +59,18 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--labels", nargs="+", required=True)
     c.add_argument("--out", type=Path, required=True)
 
+    h = sub.add_parser("convergence", help="best objective per generation of several runs")
+    h.add_argument("history", type=Path, nargs="+", help="history.txt files")
+    h.add_argument("--labels", nargs="+", required=True)
+    h.add_argument("--out", type=Path, required=True)
+
     args = parser.parse_args(argv)
-    if args.command == "analyze":
+    if args.command == "convergence":
+        if len(args.labels) != len(args.history):
+            parser.error("give one label per file")
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        plot_convergence({lab: read_history(f) for lab, f in zip(args.labels, args.history)}, path=args.out)
+    elif args.command == "analyze":
         summary = analyze(args.sto, args.out, args.name or args.sto.name.split(".")[0])
         m = summary["metrics"]
         print(

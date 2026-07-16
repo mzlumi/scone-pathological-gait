@@ -1,11 +1,13 @@
 import json
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from conftest import synthetic_walk
 from scone_gait.analysis import analyze_gait, load_template
 from scone_gait.cli import main
-from scone_gait.plots import plot_comparison, plot_gait, y_label
+from scone_gait.plots import plot_comparison, plot_convergence, plot_gait, y_label
+from scone_gait.results import History
 from scone_gait.storage import write_sto
 
 REPORT = """\
@@ -55,6 +57,24 @@ def test_cli_analyze_writes_figure_and_summary(tmp_path, capsys):
     assert summary["objective"]["value"] == 0.81
     assert summary["objective"]["children"]["Gait"]["children"]["step_velocity"]["value"] == 1.2
     assert "5 cycles" in capsys.readouterr().out
+
+
+def test_cli_convergence(tmp_path):
+    hist = tmp_path / "history.txt"
+    hist.write_text("generation\tbest_fitness\tmedian_fitness\n0\t95\t96\n1\t1.2\t50\n2\t0.8\t2\n")
+    out = tmp_path / "conv.png"
+    assert main(["convergence", str(hist), "--labels", "Healthy", "--out", str(out)]) == 0
+    assert out.exists()
+
+
+def test_convergence_axes_are_labelled():
+    h = History(np.arange(3), np.array([95.0, 1.2, 0.8]), np.array([96.0, 50.0, 2.0]))
+    fig = plot_convergence({"A": h})
+    ax = fig.axes[0]
+    assert ax.get_xlabel() == "Generation (-)"
+    assert ax.get_ylabel() == "Best objective so far (-)"
+    assert ax.get_yscale() == "log"
+    plt.close(fig)
 
 
 def test_cli_compare(tmp_path):
