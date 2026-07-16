@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from scone_gait.storage import Storage, StorageFormatError, read_sto
+from scone_gait.storage import Storage, StorageFormatError, read_sto, write_sto
 
 
-def write_sto(path, labels, rows, header=None, name="run/0001_1.000_0.900"):
+def write_raw_sto(path, labels, rows, header=None, name="run/0001_1.000_0.900"):
     header = header or {"version": "1", "inDegrees": "no"}
     lines = [name]
     lines += [f"{k}={v}" for k, v in header.items()]
@@ -15,7 +15,7 @@ def write_sto(path, labels, rows, header=None, name="run/0001_1.000_0.900"):
 
 
 def test_reads_header_labels_and_data(tmp_path):
-    f = write_sto(
+    f = write_raw_sto(
         tmp_path / "a.sto",
         ["time", "pelvis_tilt", "leg0_l.grf_norm_y"],
         [[0.0, -0.1, 0.0], [0.01, -0.2, 0.5], [0.02, -0.3, 1.0]],
@@ -40,7 +40,7 @@ def test_tolerates_trailing_tabs_and_blank_lines(tmp_path):
 
 
 def test_interpolates_linearly_and_clamps(tmp_path):
-    f = write_sto(tmp_path / "c.sto", ["time", "x"], [[0.0, 0.0], [1.0, 10.0], [2.0, 30.0]])
+    f = write_raw_sto(tmp_path / "c.sto", ["time", "x"], [[0.0, 0.0], [1.0, 10.0], [2.0, 30.0]])
     sto = read_sto(f)
     assert sto.interpolate(0.5, "x") == pytest.approx(5.0)
     assert sto.interpolate(1.5, "x") == pytest.approx(20.0)
@@ -48,7 +48,7 @@ def test_interpolates_linearly_and_clamps(tmp_path):
 
 
 def test_unknown_channel_raises_key_error(tmp_path):
-    sto = read_sto(write_sto(tmp_path / "d.sto", ["time", "x"], [[0.0, 1.0]]))
+    sto = read_sto(write_raw_sto(tmp_path / "d.sto", ["time", "x"], [[0.0, 1.0]]))
     assert sto.has("x") and not sto.has("y")
     with pytest.raises(KeyError, match="y"):
         sto["y"]
@@ -76,9 +76,25 @@ def test_first_column_must_be_time(tmp_path):
 
 
 def test_degrees_are_rejected(tmp_path):
-    f = write_sto(tmp_path / "h.sto", ["time", "x"], [[0.0, 1.0]], header={"inDegrees": "yes"})
+    f = write_raw_sto(tmp_path / "h.sto", ["time", "x"], [[0.0, 1.0]], header={"inDegrees": "yes"})
     with pytest.raises(StorageFormatError, match="inDegrees"):
         read_sto(f)
+
+
+def test_write_then_read_round_trips(tmp_path):
+    original = Storage(
+        labels=("a", "b.c"),
+        time=np.array([0.0, 0.01, 0.02]),
+        data=np.array([[1.0, -2.5], [1e-9, 3.0], [0.1 + 0.2, 4.0]]),
+        name="run/x",
+    )
+    write_sto(original, tmp_path / "x.sto")
+    copy = read_sto(tmp_path / "x.sto")
+    assert copy.name == "run/x"
+    assert copy.labels == original.labels
+    assert copy.header["nRows"] == "3" and copy.header["nColumns"] == "3"
+    np.testing.assert_array_equal(copy.time, original.time)
+    np.testing.assert_array_equal(copy.data, original.data)
 
 
 def test_storage_validates_shape_and_time():

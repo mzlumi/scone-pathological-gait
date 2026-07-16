@@ -76,6 +76,17 @@ class Storage:
         return np.interp(t, self.time, self[label])
 
 
+def write_sto(sto: Storage, path: str | Path) -> None:
+    """Write a storage in the same layout SCONE uses."""
+    lines = [sto.name or Path(path).stem, "version=1"]
+    lines.append(f"nRows={sto.frame_count}")
+    lines.append(f"nColumns={len(sto.labels) + 1}")
+    lines += ["inDegrees=no", "endheader", "\t".join(("time",) + sto.labels)]
+    for t, row in zip(sto.time, sto.data):
+        lines.append("\t".join(repr(float(v)) for v in (t, *row)))
+    Path(path).write_text("\n".join(lines) + "\n")
+
+
 def read_sto(path: str | Path) -> Storage:
     """Read a .sto file written by SCONE or OpenSim."""
     path = Path(path)
