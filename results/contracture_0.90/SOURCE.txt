@@ -1,0 +1,3 @@
+run: 260716.144920.f0914m.GH2010v8.S05W.D10.I.C090
+best: 0150_35.449_1.014.par
+init: InitParameters.par (warm start init file copied by SCONE, not a result of this run)
