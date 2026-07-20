@@ -1,0 +1,37 @@
+CmaOptimizer {
+	# max_threads = 2
+	signature_prefix = DATE_TIME
+	
+	init_file = InitParameters.par  
+	use_init_file = true
+	
+	SimulationObjective {
+		max_duration = 10
+		
+		# Model used in simulation
+		OpenSimModel {
+			model_file = Human0914.osim
+			
+			# Optimize initial state parameters
+			state_init_file = InitStateGait.sto
+			initial_state_offset =	0~0.01<-0.5,0.5>
+			initial_state_offset_exclude = "*_tx;*_ty;*_u"
+			
+			# Model: plantarflexor contracture. Tendons of soleus and gastrocnemius
+			# 10 % shorter on both legs, so the fibers are stretched further at any
+			# ankle angle and passive tension pulls the ankle into plantarflexion.
+			Properties {
+				gastroc_l { tendon_slack_length.factor = 0.90 }
+				gastroc_r { tendon_slack_length.factor = 0.90 }
+				soleus_l { tendon_slack_length.factor = 0.90 }
+				soleus_r { tendon_slack_length.factor = 0.90 }
+			}
+		}
+		
+		# Controller for gait, based on [Geyer & Herr 2010]
+		<< ControllerComplexGH.scone >>
+		
+		# Measure for gait, minimum speed 0.5 m/s
+		<< Measure05.scone >>
+	}
+}
