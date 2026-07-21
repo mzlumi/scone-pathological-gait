@@ -40,14 +40,17 @@ compare hyperreflexia_comparison.png \
   hyperreflexia_fixed1.0 "KV = 1.0 (fixed)" hyperreflexia_free1.0 "KV ~1.0 (handout, optimized)"
 
 compare model_comparison.png \
-  healthy "Healthy" contracture_0.95 "Plantarflexor contracture" hyperreflexia_fixed1.0 "Hyperreflexia KV = 1.0"
+  healthy "Healthy" contracture_0.95 "Tendon slack x 0.95" contracture_0.90 "Tendon slack x 0.90" \
+  hyperreflexia_fixed1.0 "Hyperreflexia KV = 1.0"
 
 compare crouch_comparison.png \
-  healthy "Healthy" crouch_hamstrings_0.95_warm "Hamstring contracture"
+  healthy "Healthy" crouch_hamstrings_0.95_warm "Hamstrings x 0.95" \
+  crouch_hamstrings_iliopsoas_0.95_warm "Hamstrings and iliopsoas x 0.95"
 
 convergence convergence.png \
   healthy "Healthy" weakness_0.50_cold "Weakness x 0.5" weakness_0.70 "Weakness x 0.7" \
   hyperreflexia_fixed1.0 "Hyperreflexia KV = 1.0" hyperreflexia_free1.0 "Hyperreflexia (handout)" \
-  contracture_0.95 "Plantarflexor contracture"
+  contracture_0.90 "Plantarflexor contracture x 0.90" \
+  crouch_hamstrings_iliopsoas_0.95_warm "Hip and knee flexor contracture (warm)"
 
 echo "figures written to $fig"

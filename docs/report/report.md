@@ -339,3 +339,108 @@ similar to the "jump gait" of children with cerebral palsy, who combine
 equinus with knee flexion. It is an interesting gait, but the impairment
 level is chosen by the optimizer rather than set by the modeller, which is
 why the fixed gain is used as the answer.
+
+# Deliverable 4: own model, toe walking from plantarflexor contracture
+
+> *Propose a biomechanical or neural model to reproduce heel or toe walking.
+> You can modify another biomechanical or a neural parameter similarly to
+> previous questions. Explain why you expect your model to result in a
+> pathological gait. [...] Please comment on the results obtained from the
+> values of the objective functions and gait analysis tool after evaluating
+> your solution. If your solution is not satisfying, make a hypothesis
+> regarding eventual biomechanics or neural compensations.*
+
+**Model.** Deliverable 3 produced toe walking with a *neural* impairment.
+The proposed model produces it with a *biomechanical* one: a contracture of
+the plantarflexors, as in the equinus of children with cerebral palsy, where
+the triceps surae and Achilles tendon are too short. In `Model.scone` the
+tendon slack length of soleus and gastrocnemius is shortened on both legs
+(`tendon_slack_length.factor`); the controller is unchanged, so no
+`ControllerModel.scone` is needed.
+
+**Why it should cause toe walking.** The length of a muscle-tendon unit is
+set by the joint angles. If the tendon is shorter, the muscle fibers must be
+longer at every ankle angle, so the passive elastic element of the muscle
+starts pulling at a more plantarflexed angle and pulls harder at any given
+dorsiflexion. This creates a passive plantarflexion moment that grows as the
+ankle dorsiflexes and does not depend on neural control. In this model,
+shortening the tendon by 5 % stretches the soleus fibers by 25 % of their
+optimal length (gastrocnemius 20 %), and by 10 % stretches them by 50 %
+(gastrocnemius 40 %). The foot should therefore not reach a plantigrade
+position at contact, and the heel should stay off the ground once the
+passive moment exceeds what body weight can overcome.
+
+| Tendon slack factor | First full walk | Best objective (generation) |
+|---|---|---|
+| 0.95 | generation 3 | 1.146 (100) |
+| **0.90 (chosen)** | **generation 0** | **1.014 (150)** |
+
+| Measure | Healthy | x 0.95 | **x 0.90** | Hyperreflexia KV 1.0 |
+|---|---|---|---|---|
+| Gait | 0 | 0 | **0** | 0 |
+| Effort (cost of transport, J/(kg m)) | 0.722 (7.22) | 0.955 (9.55) | **0.904 (9.04)** | 1.029 (10.29) |
+| DofLimits | 0 | 0 | **0** | 0 |
+| HeadStabilityY | 0.022 | 0.013 | **0.002** | 0.014 |
+| HeadStabilityX | 0.036 | 0.178 | **0.108** | 0.184 |
+| **Total** | 0.780 | 1.146 | **1.014** | 1.227 |
+
+**Objective.** Both contractures walk at 0.8 m/s without breaking any joint
+limit. The cost of transport rises by 25 to 32 % compared with health, less
+than with hyperreflexia (42 %), and fore-aft head accelerations are three to
+five times larger, again from landing on a plantarflexed foot. Walking was
+found almost at once (generation 0 to 3): a passive constraint is easier for
+the optimizer to work with than an active reflex that fights every stretch.
+
+![Mean gait cycles with plantarflexor contracture, against the healthy solution and the hyperreflexia solution of Deliverable 3. Grey: normal range.](../../results/figures/model_comparison.png)
+
+![Gait analysis of the plantarflexor contracture solution with tendon slack x 0.90 (`Model.scone`).](../../results/figures/contracture_0.90_gait.png)
+
+| Metric | Healthy | x 0.95 | **x 0.90** | Hyperreflexia KV 1.0 |
+|---|---|---|---|---|
+| Speed (m/s) | 1.01 | 0.78 | **0.82** | 0.73 |
+| Cadence (steps/min) | 96 | 81 | **87** | 82 |
+| Ankle at contact (deg) | 4.6 | -3.8 | **-15.0** | -14.4 |
+| Peak dorsiflexion in stance (deg) | 8.4 | 8.5 | **-6.6** | -10.8 |
+| Peak plantarflexion (deg) | -10.2 | -15.6 | **-22.0** | -25.9 |
+| Knee at contact (deg) | 2.1 | 18.6 | **19.9** | 22.0 |
+| Knee, least flexed in stance (deg) | 0.7 | -0.6 | **-2.9** | -2.9 |
+| Peak hip extension (deg) | -13.7 | -26.1 | **-17.8** | -18.0 |
+| Foot contact index | 0.00 | 1.04 | **1.26** | 1.26 |
+| Overall fit (%) | 72 | 68 | **65** | 65 |
+
+**Results.** The model reproduces toe walking, and its severity follows the
+size of the contracture:
+
+- With **x 0.90** the gait is full toe walking: contact on the toes (index
+  1.26) with the ankle plantarflexed by 15 deg, the heel never reaches the
+  ground (stance never gets past 7 deg of plantarflexion), and push-off
+  reaches -22 deg. The knee lands flexed (20 deg) and is pushed into slight
+  hyperextension in midstance, the same plantarflexion and knee extension
+  couple as with hyperreflexia.
+- With **x 0.95** the model lands on the ball of the foot (index 1.04,
+  ankle -4 deg) and then lowers its heel: the ankle dorsiflexes to 8.5 deg in
+  midstance before an early, strong push-off. This "toe-heel" pattern is
+  typical of a mild equinus.
+
+**Contracture or spasticity?** The kinematics of the two causes are close,
+but not identical. With the contracture the ankle still dorsiflexes slowly
+in early stance (from -15 deg at contact to about -7 deg) because passive
+tension depends on length, not on speed; with hyperreflexia the ankle stays
+almost flat, because any fast stretch is answered by a contraction. This is
+the difference clinicians probe when they move the ankle slowly and then
+quickly during an examination (the Tardieu scale), and it shows why the
+cause of a toe walking pattern cannot easily be read from gait kinematics
+alone.
+
+**Compensations.** The x 0.90 solution is satisfying. For the milder x 0.95
+contracture, the heel does come down, and the solution suggests how: the
+reflex gains of the plantarflexors are almost unchanged from the healthy
+solution (soleus force gain 0.27 to 0.32), so the heel is not lowered by
+switching off the plantarflexors. Instead body weight stretches the
+contracted muscles, helped by a knee that locks straight in midstance and by
+a much larger hip extension at the end of stance (-26 deg against -14 deg),
+which carries the body over the stiff ankle. In a patient, further
+compensations would be possible that this model cannot produce, for example
+stronger tibialis anterior activity in swing to lift the forefoot, or
+reduced spinal excitability; a feedforward component in the controller would
+be needed to test them.
