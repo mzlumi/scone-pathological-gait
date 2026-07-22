@@ -444,3 +444,58 @@ compensations would be possible that this model cannot produce, for example
 stronger tibialis anterior activity in swing to lift the forefoot, or
 reduced spinal excitability; a feedforward component in the controller would
 be needed to test them.
+
+# Extension: can crouch gait emerge?
+
+*This section is not part of the 2021 handout.* Crouch gait, walking with
+excessive knee and hip flexion throughout stance, is the most common gait
+pattern in ambulatory children with cerebral palsy. Short hamstrings and hip
+flexors are often blamed for it, so knee and hip flexor contractures were
+modelled the same way as in Deliverable 4.
+
+| Model | Start | Outcome |
+|---|---|---|
+| Hamstrings, tendon slack x 0.90 | handout initial guess | never walked (best 89.8 after 145 generations), stopped |
+| Hamstrings, tendon slack x 0.90 | healthy solution | never completed 10 s in 200 generations (best 50.2) |
+| Hamstrings, tendon slack x 0.95 | healthy solution | walked, best 0.958 |
+| Hamstrings and iliopsoas, tendon slack x 0.95 | healthy solution | walked, best 0.859 |
+
+The contracture runs were warm started from the healthy solution, since the
+cold start did not find a gait at all.
+
+![Mean gait cycles with knee and hip flexor contractures against the healthy solution. Grey: normal range.](../../results/figures/crouch_comparison.png)
+
+**No crouch emerged.** The mild contractures change the gait only a little:
+the knee flexes more during loading with short hamstrings (30 deg against 23
+deg), but in midstance it is as straight as in health (least flexed 3.1 deg
+and 0.2 deg against 0.7 deg). The clearest change is at the pelvis: both
+models tilt it about 3 deg posteriorly on average (-8.7 and -8.9 deg against
+-11.7 deg). A posterior pelvic tilt slackens the hamstrings at the hip, so
+the knee does not have to stay flexed. This is the compensation seen in
+people with tight hamstrings. A stronger contracture made walking impossible
+instead of producing a crouch.
+
+**Why the model avoids crouch.** Three reasons are likely:
+
+1. *The objective.* Crouch needs large, sustained quadriceps forces to hold
+   the flexed knee, so it costs much more energy than upright walking. An
+   optimizer that minimizes metabolic cost will use any other compensation
+   first (here the pelvis), and only accept a crouch if upright walking is
+   impossible.
+2. *What is missing from the model.* In children with cerebral palsy crouch
+   usually comes with bone deformities (femoral anteversion, tibial torsion)
+   that reduce the moment arms of the antigravity muscles, and with weakness
+   and impaired selective control. The planar model has none of these. A
+   predictive study of one child with crouch gait (Falisse et al. 2020) found
+   that personalized muscle-tendon properties, on a model that included the
+   child's bone deformities, were what reproduced the crouch, not reduced
+   control complexity or spasticity.
+3. *Hamstring length.* Shortening the hamstrings is not the whole story
+   clinically either: in many children who walk in crouch, the hamstrings
+   operate at normal or long lengths during gait.
+
+Testing crouch properly would need impairments that remove the upright
+option: combined plantarflexor weakness (in Deliverable 2 the model kept its
+knee straight only by hyperextending it against the joint limit), a
+stiffer knee extension limit, reduced quadriceps strength, or an objective
+that weighs effort less.
