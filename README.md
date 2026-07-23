@@ -30,7 +30,7 @@ The SCONE assignment was written by Alice Bruel, Dimitar Stanev, Andrea Di Russo
 - BioRob teaching page: <https://www.epfl.ch/labs/biorob/students/>
 - SCONE: <https://scone.software> and the paper by Geijtenbeek (2019), [JOSS 4(38) 1421](https://doi.org/10.21105/joss.01421)
 - The reflex controller: Geyer and Herr (2010), [IEEE TNSRE 18(3) 263](https://doi.org/10.1109/TNSRE.2010.2047592)
-- Research from the same group on toe and heel walking in SCONE: Di Russo et al. (2023), [J Physiol](https://doi.org/10.1113/JP282609)
+- Research from the same group on toe and heel walking in SCONE: Bruel et al. (2022), [J Physiol 600(11) 2691](https://doi.org/10.1113/JP282609)
 
 ## The assignment
 
