@@ -448,8 +448,8 @@ be needed to test them.
 # Extension: can crouch gait emerge?
 
 *This section is not part of the 2021 handout.* Crouch gait, walking with
-excessive knee and hip flexion throughout stance, is the most common gait
-pattern in ambulatory children with cerebral palsy. Short hamstrings and hip
+excessive knee and hip flexion throughout stance, is one of the most common
+gait patterns in ambulatory children with cerebral palsy. Short hamstrings and hip
 flexors are often blamed for it, so knee and hip flexor contractures were
 modelled the same way as in Deliverable 4.
 
@@ -492,10 +492,73 @@ instead of producing a crouch.
    control complexity or spasticity.
 3. *Hamstring length.* Shortening the hamstrings is not the whole story
    clinically either: in many children who walk in crouch, the hamstrings
-   operate at normal or long lengths during gait.
+   operate at normal or long lengths during gait (Arnold et al. 2006).
 
 Testing crouch properly would need impairments that remove the upright
 option: combined plantarflexor weakness (in Deliverable 2 the model kept its
 knee straight only by hyperextending it against the joint limit), a
 stiffer knee extension limit, reduced quadriceps strength, or an objective
 that weighs effort less.
+
+# Summary
+
+| Deliverable | Impairment | Gait produced | Key signs |
+|---|---|---|---|
+| 1 | none | near-normal walking at 1.0 m/s, objective 0.780 | stiff knee in midstance, weak push-off, heel impact spike |
+| 2 | plantarflexor force x 0.5 | heel walking at 0.65 m/s | dorsiflexed contact, excessive stance dorsiflexion, no push-off, knee hyperextension |
+| 3 | stance V+ reflex gain of soleus and gastrocnemius fixed at 1.0 | toe walking at 0.73 m/s | forefoot contact, heel never down, ankle 15 to 20 deg more plantarflexed |
+| 4 | plantarflexor tendon slack length x 0.90 | toe walking at 0.82 m/s | as Deliverable 3, but the ankle still dorsiflexes slowly in early stance |
+| Extension | hamstring and iliopsoas contracture | no crouch; posterior pelvic tilt instead | |
+
+These results agree with a study by the group that wrote the assignment
+(Bruel et al. 2022), which used an extended version of the same controller:
+there, too, plantarflexor hyperreflexia produced toe walking while muscle or
+neural weakness only partly produced heel walking. Here the weakness did
+produce a clear heel gait, but it was by far the hardest condition for the
+optimizer.
+
+![Best objective against generation for the chosen solutions. The weakened model needed 176 generations to find a gait that does not fall.](../../results/figures/convergence.png)
+
+**Limitations.** Each condition was optimized once, from one initial guess
+and one random seed, and CMA-ES finds local optima: the two different knee
+strategies found for the same weakness in Deliverable 2 show how much this
+matters. Most pathological runs were stopped at about 100 generations,
+before the 200 allowed, when they had plateaued. The model is planar, its
+feet have no toe joint, the knee extension limit is soft, and the objective
+does not penalize knee hyperextension below 5 Nm of limit torque, which the
+optimizer used in several solutions. The gait analysis follows SCONE
+Studio's code but runs outside the GUI; its speed agrees with SCONE's own
+gait measure within 3 %.
+
+# Reproducibility
+
+All runs used SCONE 2.4.5-RC-2 (OpenSim 3.3 backend) from the official
+scone-studio Linux build, in Docker. Every optimized scenario is in
+`scone/sweeps/`, the handout-named scenarios are in `scone/`, and each
+curated result folder in `results/` contains the setup files SCONE copied,
+the best `.par` file, its evaluated `.par.sto` and the objective breakdown
+`.par.txt`. A solution can be replayed with
+`scripts/scone.sh evaluate results/<name>/<best>.par`. The notebook
+`docs/notebook.md` lists every run, including the failed ones, in order.
+
+# References
+
+- Geyer H, Herr H (2010). A muscle-reflex model that encodes principles of
+  legged mechanics produces human walking dynamics and muscle activities.
+  *IEEE Trans Neural Syst Rehabil Eng* 18(3):263-273.
+- Geijtenbeek T (2019). SCONE: open source software for predictive
+  simulation of biological motion. *J Open Source Softw* 4(38):1421.
+- Wang JM, Hamner SR, Delp SL, Koltun V (2012). Optimizing locomotion
+  controllers using biologically-based actuators and objectives. *ACM Trans
+  Graph* 31(4):25.
+- Bruel A, Ben Ghorbel S, Di Russo A, Stanev D, Armand S, Courtine G,
+  Ijspeert A (2022). Investigation of neural and biomechanical impairments
+  leading to pathological toe and heel gaits using neuromusculoskeletal
+  modelling. *J Physiol* 600(11):2691-2712.
+- Falisse A, Pitto L, Kainz H, et al. (2020). Physics-based simulations to
+  predict the differential effects of motor control and musculoskeletal
+  deficits on gait dysfunction in cerebral palsy: a retrospective case
+  study. *Front Hum Neurosci* 14:40.
+- Arnold AS, Liu MQ, Schwartz MH, Ounpuu S, Delp SL (2006). The role of
+  estimating muscle-tendon lengths and velocities of the hamstrings in the
+  evaluation and treatment of crouch gait. *Gait Posture* 23(3):273-281.
