@@ -144,3 +144,30 @@ and each further generation cost about 3 minutes of the shared machine.
   (first generation with an objective below 2). Several earlier notes had
   used whichever result file was newest at the time of checking, which is
   later than the real event.
+
+### Third batch and wrap-up
+
+- **Warm start bug caught before it mattered.** In warm-started folders SCONE
+  copies the init file, here `0035_1.021_0.780.par` from the healthy run.
+  `best_result` picked the lowest objective in any result-style file name, so
+  it would have returned the healthy solution as the best of a pathological
+  run. It now skips the `init_file` named in `config.scone`, and curation
+  keeps that file but names it in `SOURCE.txt`.
+- **Hyperreflexia gain bracket**: fixed KV = 0.3 already gives a forefoot
+  contact (milder, irregular); KV = 1.0 gives regular toe walking (chosen);
+  KV = 3.0 walks on its toes with 16 deg of knee hyperextension and falls at
+  9.06 s, never completing 10 s in 200 generations.
+- **Contracture bracket**: tendon slack x 0.95 gives a toe-heel gait, x 0.90
+  full toe walking (chosen for `Model.scone`).
+- **Crouch**: neither hamstring x 0.95 nor hamstring and iliopsoas x 0.95
+  (both warm started) produced a crouch; both tilt the pelvis about 3 deg
+  posteriorly instead. Reported as a negative result with reasons.
+- Stopping points: most walking runs were stopped near generation 100. The
+  contracture x 0.90 and the combined crouch run ran on to generations 150
+  and 189 while I was waiting, still inside the 200 limit.
+- A reference written from memory (a "Di Russo et al. 2023" paper) turned out
+  to be wrong when checked: the toe and heel walking study is Bruel et al.
+  (2022), J Physiol. README and report were corrected, and the unverified
+  reference removed.
+- The "children who toe walk spend more energy" sentence in Deliverable 3 had
+  no source at hand and was replaced by the model's own explanation.
