@@ -206,8 +206,8 @@ the foot in stance.
 
 **Kinematic adaptations.** The weakened model walks on its heels:
 
-1. *Excessive dorsiflexion.* The foot lands on the heel (contact index about
-   0) with the ankle dorsiflexed by 10 deg instead of 5 deg, and the shank
+1. *Excessive dorsiflexion.* The foot lands on the heel (contact index near
+   zero) with the ankle dorsiflexed by 10 deg instead of 5 deg, and the shank
    keeps rotating forward over the foot through stance, up to 13 deg of
    dorsiflexion (18 deg with the warm start) where the healthy model stops at
    8 deg. Weak plantarflexors cannot brake the forward rotation of the tibia
