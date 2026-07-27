@@ -100,13 +100,32 @@ scripts/make_figures.sh && scripts/build_report.sh && scripts/package_submission
 
 On Apple silicon the amd64 image runs under emulation: one 10 s simulation takes about 20 s of CPU, and 200 generations of 15 simulations cost about 18 core hours.
 
+## Results
+
+| Deliverable | Impairment | Result |
+|---|---|---|
+| 1. Healthy gait | none | walks at 1.0 m/s, objective 0.780 after 35 generations (target below 0.9) |
+| 2. Weakness | plantarflexor force x 0.5 | **heel walking**: dorsiflexed contact, excessive stance dorsiflexion, no push-off, knee hyperextension |
+| 3. Hyperreflexia | stance velocity reflex gain of soleus and gastrocnemius fixed at 1.0 | **toe walking**: forefoot contact, heel never down |
+| 4. Own model | plantarflexor tendon 10 % shorter (contracture) | **toe walking**, with slow ankle dorsiflexion in early stance that tells it apart from spasticity |
+| Extension | hamstring and iliopsoas contracture | no crouch: the model tilts the pelvis posteriorly instead |
+
+![Healthy gait analysis](results/figures/healthy_gait.png)
+
+Two findings beyond the questions:
+
+- **The handout's hyperreflexia recipe lets the optimizer reshape the impairment.** Written as `KV = ~1.0<0,10>`, the reflex gain stays a design parameter: the optimizer halved the soleus gain and raised the gastrocnemius gain to 1.56. The chosen solution fixes the gain instead, as SCONE's own tutorial does.
+- **Weakness is the hardest condition to optimize.** At half strength the model needed 176 of the 200 allowed generations to find a gait that does not fall, and at a quarter strength it never did.
+
+The report is [`docs/report/report.pdf`](docs/report/report.pdf) (source: [`report.md`](docs/report/report.md)), and every run, including failed ones and mistakes, is in the [lab notebook](docs/notebook.md).
+
 ## Status
 
-- [ ] Headless SCONE runner (Docker)
-- [ ] Python tools: result readers, gait events, normative comparison, plots
-- [ ] Deliverable 1: healthy gait
-- [ ] Deliverable 2: plantarflexor weakness
-- [ ] Deliverable 3: hyperreflexia
-- [ ] Deliverable 4: own model
-- [ ] Extension: crouch gait
-- [ ] Report and submission archive
+- [x] Headless SCONE runner (Docker)
+- [x] Python tools: result readers, gait events, normative comparison, metrics, plots (tested)
+- [x] Deliverable 1: healthy gait
+- [x] Deliverable 2: plantarflexor weakness
+- [x] Deliverable 3: hyperreflexia
+- [x] Deliverable 4: own model (plantarflexor contracture)
+- [x] Extension: crouch gait (negative result)
+- [x] Report and submission archive
