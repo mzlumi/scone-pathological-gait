@@ -68,6 +68,7 @@ The handout expects the SCONE desktop app on Windows. This repository runs the o
 | [`docs/handout/`](docs/handout) | The 2021 assignment handout (the specification) |
 | [`docs/report/`](docs/report) | The report (Markdown source and PDF) |
 | [`docs/notebook.md`](docs/notebook.md) | Lab notebook: every run, decision and mistake, in order |
+| [`docs/compute.md`](docs/compute.md) | Machine spec, SCONE speed benchmarks, and the cost of every optimization |
 | [`scone/`](scone/README.md) | Course setup files and the deliverable scenarios (`Weakness.scone`, `Hyperreflexia.scone`, `Model.scone`, ...) |
 | [`scone/sweeps/`](scone/sweeps) | Every scenario variant that was optimized |
 | `results/<name>/` | Curated runs: setup files SCONE copied, best solution, its evaluation (`.par.sto`) and objective breakdown (`.par.txt`) |
@@ -98,7 +99,7 @@ scripts/scone.sh evaluate results/healthy/0035_1.021_0.780.par
 scripts/make_figures.sh && scripts/build_report.sh && scripts/package_submission.sh
 ```
 
-On Apple silicon the amd64 image runs under emulation: one 10 s simulation takes about 20 s of CPU, and 200 generations of 15 simulations cost about 18 core hours.
+On Apple silicon the amd64 image runs under emulation. On an idle Apple M5 one 10 s simulation takes about 5 to 6 s, and a generation of 15 walking candidates about 20 s. The whole campaign (15 optimizations, about 1,900 generations and 28,000 simulations) took about 12.5 hours of wall time with several runs in parallel. Hardware, benchmarks and a per-run log are in [`docs/compute.md`](docs/compute.md).
 
 ## Results
 
