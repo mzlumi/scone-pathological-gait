@@ -171,3 +171,16 @@ and each further generation cost about 3 minutes of the shared machine.
   reference removed.
 - The "children who toe walk spend more energy" sentence in Deliverable 3 had
   no source at hand and was replaced by the model's own explanation.
+
+### Correction: how expensive a run really is
+
+The planning note above ("about 22 s of CPU per simulation, about 18 core
+hours per 200 generations") was wrong. It came from timings taken while
+several optimizations shared the CPU. Measured on the idle machine
+afterwards, one 10 s healthy simulation takes 5 to 6 s on one core, and a
+generation of 15 walking candidates takes 19 s with 10 threads and 23 s with
+3 threads. Parallel scaling on the M5 is weak (only 4 of the 10 cores are
+performance cores, and everything is emulated), which is also why running
+several 3-thread optimizations side by side worked well. The same benchmark
+gave identical histories with 3 and 10 threads, so the thread count does not
+change results. Details in [`compute.md`](compute.md).
