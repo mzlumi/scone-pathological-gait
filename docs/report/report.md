@@ -1,6 +1,6 @@
 ---
 title: "Predictive simulation of healthy and pathological gait with SCONE"
-subtitle: "BIOENG-404 Analysis and Modelling of Locomotion, EPFL. SCONE assignment (2021 handout)"
+subtitle: "[BIOENG-404 Analysis and Modelling of Locomotion](https://graphsearch.epfl.ch/en/course/BIOENG-404), EPFL. SCONE assignment (2021 handout)"
 author: "Parmida Mazloomi"
 geometry: margin=2.2cm
 fontsize: 10pt

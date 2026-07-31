@@ -1,14 +1,14 @@
 # Predictive Simulation of Healthy and Pathological Gait with SCONE
 
-My solution to the SCONE assignment of **BIOENG-404 Analysis and Modelling of Locomotion** at EPFL: a reflex-controlled musculoskeletal model is optimized to walk, then weakened, made spastic and given a self-chosen impairment to see which pathological gaits emerge. The simulations run headless, and the gait analysis is a small, tested Python package.
+My solution to the SCONE assignment of **[BIOENG-404 Analysis and Modelling of Locomotion](https://graphsearch.epfl.ch/en/course/BIOENG-404)** at [EPFL](https://www.epfl.ch): a reflex-controlled musculoskeletal model is optimized to walk, then weakened, made spastic and given a self-chosen impairment to see which pathological gaits emerge. The simulations run headless, and the gait analysis is a small, tested Python package.
 
 ## The course
 
-**BIOENG-404 Analysis and Modelling of Locomotion** is a 4 ECTS master's course at EPFL (Ecole polytechnique fédérale de Lausanne), offered in the bioengineering programme and taken as an option in the robotics and neuroscience programmes. It is taught jointly by three labs:
+**[BIOENG-404 Analysis and Modelling of Locomotion](https://graphsearch.epfl.ch/en/course/BIOENG-404)** is a 4 ECTS master's course at [EPFL](https://www.epfl.ch) (Ecole polytechnique fédérale de Lausanne), offered in the bioengineering programme and taken as an option in the robotics and neuroscience programmes. It is taught jointly by three labs:
 
-- **Prof. Kamiar Aminian**, Laboratory of Movement Analysis and Measurement (LMAM): gait measurement with force plates, pressure insoles and wearable inertial sensors;
-- **Prof. Auke Ijspeert**, Biorobotics Laboratory (BioRob): numerical models of locomotion, reflex and central pattern generator controllers, links to legged robots;
-- **Prof. Grégoire Courtine**, neuroprosthetics for spinal cord injury: motor circuits, epidural electrical stimulation and recovery of walking.
+- **[Prof. Kamiar Aminian](https://people.epfl.ch/kamiar.aminian)** (now emeritus), former head of the [Laboratory of Movement Analysis and Measurement (LMAM)](https://lmam.epfl.ch), which closed in 2023: gait measurement with force plates, pressure insoles and wearable inertial sensors;
+- **[Prof. Auke Ijspeert](https://people.epfl.ch/auke.ijspeert)**, [Biorobotics Laboratory (BioRob)](https://biorob.epfl.ch): numerical models of locomotion, reflex and central pattern generator controllers, links to legged robots;
+- **[Prof. Grégoire Courtine](https://people.epfl.ch/gregoire.courtine)**, [Courtine Lab](https://courtine-lab.epfl.ch), neuroprosthetics for spinal cord injury: motor circuits, epidural electrical stimulation and recovery of walking.
 
 The course description reads: "an overview of the state of the art in the analysis and modeling of human locomotion and the underlying motor circuits", covering neurophysiology, gait characterization, biomechanics, numerical modeling, neuroprosthetics and biped robots.
 
@@ -21,12 +21,12 @@ The lectures are paired with a series of hands-on assignments. Based on the 2021
 | **SCONE** | **Forward, predictive simulation of healthy and pathological gait (this repository)** |
 | Neural and EMG data | Feature extraction and PCA of motion capture and EMG in rats, monkeys and humans with spinal cord injury |
 
-The SCONE assignment was written by Alice Bruel, Dimitar Stanev, Andrea Di Russo and Auke Ijspeert (BioRob).
+The SCONE assignment was written by Alice Bruel, Dimitar Stanev, Andrea Di Russo and [Auke Ijspeert](https://people.epfl.ch/auke.ijspeert) ([BioRob](https://biorob.epfl.ch)).
 
 ### Links
 
 - Course page (EPFL Graph Search): <https://graphsearch.epfl.ch/en/course/BIOENG-404>
-- EPFL coursebook: <https://edu.epfl.ch/coursebook/en/analysis-and-modelling-of-locomotion-BIOENG-404>
+- EPFL coursebook: `edu.epfl.ch/coursebook/en/analysis-and-modelling-of-locomotion-BIOENG-404` (no longer online; the course is not in the current coursebook)
 - BioRob teaching page: <https://www.epfl.ch/labs/biorob/students/>
 - SCONE: <https://scone.software> and the paper by Geijtenbeek (2019), [JOSS 4(38) 1421](https://doi.org/10.21105/joss.01421)
 - The reflex controller: Geyer and Herr (2010), [IEEE TNSRE 18(3) 263](https://doi.org/10.1109/TNSRE.2010.2047592)
@@ -119,14 +119,3 @@ Two findings beyond the questions:
 - **Weakness is the hardest condition to optimize.** At half strength the model needed 176 of the 200 allowed generations to find a gait that does not fall, and at a quarter strength it never did.
 
 The report is [`docs/report/report.pdf`](docs/report/report.pdf) (source: [`report.md`](docs/report/report.md)), and every run, including failed ones and mistakes, is in the [lab notebook](docs/notebook.md).
-
-## Status
-
-- [x] Headless SCONE runner (Docker)
-- [x] Python tools: result readers, gait events, normative comparison, metrics, plots (tested)
-- [x] Deliverable 1: healthy gait
-- [x] Deliverable 2: plantarflexor weakness
-- [x] Deliverable 3: hyperreflexia
-- [x] Deliverable 4: own model (plantarflexor contracture)
-- [x] Extension: crouch gait (negative result)
-- [x] Report and submission archive
