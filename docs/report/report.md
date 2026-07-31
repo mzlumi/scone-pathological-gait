@@ -533,7 +533,13 @@ gait measure within 3 %.
 # Reproducibility
 
 All runs used SCONE 2.4.5-RC-2 (OpenSim 3.3 backend) from the official
-scone-studio Linux build, in Docker. Every optimized scenario is in
+scone-studio Linux build, in Docker, on an Apple M5 laptop (10 cores, 16 GB
+RAM) under amd64 emulation. On the idle machine a 10 s simulation took 5 to
+6 s and a generation of 15 walking candidates about 20 s; the 15
+optimizations of this report (about 1,900 generations, 28,000 simulations)
+took about 12.5 hours of wall time with several runs in parallel
+(`docs/compute.md` has the full log). Thread count did not change the
+results: 3 and 10 threads gave identical optimization histories. Every optimized scenario is in
 `scone/sweeps/`, the handout-named scenarios are in `scone/`, and each
 curated result folder in `results/` contains the setup files SCONE copied,
 the best `.par` file, its evaluated `.par.sto` and the objective breakdown
